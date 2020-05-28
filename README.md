@@ -1,6 +1,5 @@
 ## React Management Project
-본 프로젝트는 React 연습 및 고객관리 프로젝트를 진행을 목적으로 제작한 프로젝트 입니다.
-해당 프로젝트는 유튜버 '동빈나'님의 영상을 토대로 만들었음을 명시하는 바 입니다.
+고객관리 시스템
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
