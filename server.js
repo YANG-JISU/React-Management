@@ -21,6 +21,9 @@ const connection = mysql.createConnection({
 });
 connection.connect();
 
+const multer = require('multer');
+const upload = multer({dest: './upload'})
+
 app.get('/api/customers', (req, res) => {
     connection.query(
         "SELECT * FROM customer",
@@ -29,5 +32,21 @@ app.get('/api/customers', (req, res) => {
         }
     );
 }); 
+/*./upload 폴더의 경로를 /image로 치환? 좀더 알아봐야할 듯*/
+app.use('/image', express.static('./upload'));
+app.post('/api/customers', upload.single('image'), (req, res) => {
+    let sql = 'Insert into customer values (null, ?, ?, ?, ?, ?)';
+    /*let image = '/image/'+req.file.filename;*/
+    let image = 'http://localhost:5000/image/'+req.file.filename;
+    let name = req.body.name;
+    let birth = req.body.birth;
+    let gender = req.body.gender;
+    let job = req.body.job;
+    let params = [image, name, birth, gender, job];
+    connection.query(sql, params,
+        (err, rows, fields) => {
+            res.send(rows);
+        })
+});
 
 app.listen(port, () => console.log(`Listening on port ${port}`));

@@ -18,7 +18,23 @@ class CustomerAdd extends React.Component{
         this.addCustomer()
             .then((response) => {
                 console.log(response.data);
+                /*추가된 부분
+                : 비 동기적 리스트 추가로 페이지 전체 리로딩이 아닌 고객 리스트 부분만 리프레시 하는 방식
+                */
+                this.props.stateRefresh();
             })
+            this.setState({
+                file: null,
+                userName: '',
+                birth: '',
+                gender: '',
+                job: '',
+                fileName: ''
+            })
+            /*
+            페이지 전체를 리로드 하여 리스트를 새로고침 하는 방식
+            window.location.reload();
+            */
     }
     handleFileChange = (e) => {
         this.setState({
