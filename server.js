@@ -26,7 +26,7 @@ const upload = multer({dest: './upload'})
 
 app.get('/api/customers', (req, res) => {
     connection.query(
-        "SELECT * FROM customer",
+        "SELECT * FROM customer where isDeleted=0",
         (err, rows, fields) => {
             res.send(rows);
         }
@@ -35,7 +35,7 @@ app.get('/api/customers', (req, res) => {
 /*./upload 폴더의 경로를 /image로 치환? 좀더 알아봐야할 듯*/
 app.use('/image', express.static('./upload'));
 app.post('/api/customers', upload.single('image'), (req, res) => {
-    let sql = 'Insert into customer values (null, ?, ?, ?, ?, ?)';
+    let sql = 'Insert into customer values (null, ?, ?, ?, ?, ?, now(), 0)';
     /*let image = '/image/'+req.file.filename;*/
     let image = 'http://localhost:5000/image/'+req.file.filename;
     let name = req.body.name;
@@ -49,4 +49,18 @@ app.post('/api/customers', upload.single('image'), (req, res) => {
         })
 });
 
+/*
+    특정 id 값으로 삭제 요청이 들어왔을 경우
+    customer 테이블에 isDeleted 데이터를 1 로 변경해주어
+    화면에서 해당 데이터가 보이지 않도록 설정 값을 변경
+*/
+app.delete('/api/customers/:id', (req, res) => {
+    let sql = 'Update customer SET isDeleted=1 where id = ?';
+    let params = [req.params.id];
+    connection.query(sql, params, 
+        (err, rows, fields) => {
+            res.send(rows);
+        }
+    )
+});
 app.listen(port, () => console.log(`Listening on port ${port}`));
